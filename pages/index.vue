@@ -1,5 +1,5 @@
 <template>
-  <Tutorial/>
+  <Nova/>
 </template>
 
 <script>
