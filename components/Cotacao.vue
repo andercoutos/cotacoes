@@ -78,7 +78,8 @@
 		}
 		document.getElementById("ativo").value='';
 		const response = await fetch(
-		codigo+".json"
+		//codigo+".json"
+		"https://rest.coinapi.io/v1/exchangerate/"+codigo+"/USD?apikey=081284B6-2E06-4BAF-97BA-18265DAE4751"
 		);
 		const json = await response.json();
 		var html=document.getElementById('listaDeAtivos').innerHTML;
