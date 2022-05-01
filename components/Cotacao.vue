@@ -2,13 +2,44 @@
 	<div>
 
 
-
 	<div class="flex justify-center">
 	  <div class="mb-3 xl:w-96">
 	    <label for="exampleFormControlInput1" class="form-label inline-block mb-2 text-gray-700" >Nome do ativo</label>
 	    <input
+		onkeyup="autocompletar()"
 		type="text" name="ativo" id="ativo" placeholder="Digite o nome do ativo"
 	      class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none">
+
+		  <ul id="list" class="bg-white rounded-lg border border-gray-200 w-96 text-gray-900">
+
+		  </ul>
+	<script>
+
+	async function autocompletar(){
+	const list = document.getElementById('list');
+		var entrada=document.getElementById('ativo').value.trim().toLowerCase();
+		if(entrada.length<1){
+			list.innerHTML='';
+		}
+		const response = await fetch(
+			"ativos.json"
+		);
+		const ativos = await response.json();
+
+		ativos.forEach((ativo) => {
+		      if(entrada == ativo.nome.toLowerCase() || entrada == ativo.codigo.toLowerCase()){
+		        const li = document.createElement('li');
+				li.className='px-6 py-2 border-b border-gray-200 w-full';
+		        li.innerHTML= `<a href="javascript:adicionarALista('${ativo.nome}','${ativo.codigo}')">${ativo.nome} (${ativo.codigo})</a>`;
+		        list.appendChild(li);
+		      }
+		    });
+
+
+	}
+
+
+	</script>
 	  </div>
 	</div>
 
@@ -26,19 +57,35 @@
 	</div>
 
 	<script>
-	async function adicionarALista(codigo){
-	if(!codigo){
-	var codigo=document.getElementById("ativo").value;
+	async function adicionarALista(nome,codigo){
+		const list = document.getElementById('list');
+		list.innerHTML='';
+		if(!codigo){
+			var codigo=document.getElementById("ativo").value;
+
+			const response = await fetch(
+				"ativos.json"
+			);
+			const ativos = await response.json();
+
+			ativos.forEach((ativo) => {
+		      if(codigo.toLowerCase() == ativo.nome.toLowerCase() || codigo.toLowerCase() == ativo.codigo.toLowerCase()){
+			  	codigo=ativo.codigo;
+				nome=ativo.nome;
+		      }
+		    });
+
+		}
+		document.getElementById("ativo").value='';
+		const response = await fetch(
+		codigo+".json"
+		);
+		const json = await response.json();
+		var html=document.getElementById('listaDeAtivos').innerHTML;
+		var valor='<li class="px-6 py-2 border-b border-gray-200 w-full">'+nome+' ('+codigo+') $' + json.rate+'</li>';
+		document.getElementById('listaDeAtivos').innerHTML=html+valor
 	}
-	const response = await fetch(
-	"http://localhost:3000/"+codigo+".json"
-	);
-	const json = await response.json();
-	var html=document.getElementById('listaDeAtivos').innerHTML;
-	var valor='<li class="px-6 py-2 border-b border-gray-200 w-full">'+codigo+' $' + json.rate+'</li>';
-	document.getElementById('listaDeAtivos').innerHTML=html+valor
-	}
-	adicionarALista('BTC');
+	adicionarALista('Bitcoin','BTC');
 	</script>
 	</div>
 </template>
