@@ -1,11 +1,9 @@
 <template>
-  <Nova/>
+  	<Cotacao/>
 </template>
 
 <script>
 export default {
   name: 'IndexPage'
 }
-
-
 </script>
