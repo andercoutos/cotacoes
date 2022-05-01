@@ -83,10 +83,29 @@
 		);
 		const json = await response.json();
 		var html=document.getElementById('listaDeAtivos').innerHTML;
-		var valor='<li class="px-6 py-2 border-b border-gray-200 w-full">'+nome+' ('+codigo+') $' + json.rate+'</li>';
+		var valor='<li class="px-6 py-2 border-b border-gray-200 w-full">'+nome+' ('+codigo+') $';
+		valor=valor+'<span x-code="'+codigo+'">'+json.rate+'</span></li>';
 		document.getElementById('listaDeAtivos').innerHTML=html+valor
 	}
 	adicionarALista('Bitcoin','BTC');
+
+
+
+	async function atualizarCotacoes() {
+		var xCodes=document.querySelectorAll("span[x-code]");
+		xCodes.forEach( async (code)=>{
+			var codigo=code.getAttribute("x-code");
+			console.log(codigo);
+			var url="https://rest.coinapi.io/v1/exchangerate/"+codigo+"/USD?apikey=081284B6-2E06-4BAF-97BA-18265DAE4751";
+			let response = await fetch(url);
+			let json = await response.json();
+			if (response.ok) {
+  				code.innerHTML=json.rate+' 🔄';
+			}
+		});
+	}
+	var atualizarACada=30;//segundos
+	setInterval(atualizarCotacoes, atualizarACada*1000);
 	</script>
 	</div>
 </template>
